@@ -2,13 +2,13 @@
 
 # check if correct number of arguments are provided
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 <directory_with_files> <md5_file>"
+  echo "Usage: $0 <directory_with_files> <md5_filename>"
   exit 1
 fi
 
 # assign command-line arguments to variables
 file_directory="$1"
-checksum_file="$2"
+checksum_filename="$2"
 
 # check if the directory exists
 if [[ ! -d "$file_directory" ]]; then
@@ -16,9 +16,12 @@ if [[ ! -d "$file_directory" ]]; then
   exit 1
 fi
 
-# check if the md5 checksum file exists
-if [[ ! -f "$checksum_file" ]]; then
-  echo "MD5 checksum file not found: $checksum_file"
+# search for the checksum file in the specified directory
+checksum_file=$(find "$file_directory" -type f -name "$checksum_filename")
+
+# check if the checksum file was found
+if [[ -z "$checksum_file" ]]; then
+  echo "MD5 checksum file not found: $checksum_filename in $file_directory"
   exit 1
 fi
 
