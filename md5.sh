@@ -16,11 +16,11 @@ if [[ ! -d "$file_directory" ]]; then
   exit 1
 fi
 
-# search for the checksum file in the specified directory
-checksum_file=$(find "$file_directory" -type f -name "$checksum_filename")
+# construct the full path to the checksum file
+checksum_file="$file_directory/$checksum_filename"
 
-# check if the checksum file was found
-if [[ -z "$checksum_file" ]]; then
+# check if the checksum file exists in the specified directory (not subdirectories)
+if [[ ! -f "$checksum_file" ]]; then
   echo "MD5 checksum file not found: $checksum_filename in $file_directory"
   exit 1
 fi
