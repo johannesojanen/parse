@@ -12,6 +12,7 @@ conda activate spipe
 
 # Combine results
 split-pipe \
-    --mode comb \
-    --sublibraries ${output_dir_sub1} ${output_dir_sub2} \
-    --output_dir ${combined_output_dir}
+   --mode comb \
+   --sublib_list ${sublib_list_file} \
+   --output_dir ${combined_output_dir} \
+   ${dry_run_option}
