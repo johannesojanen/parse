@@ -17,7 +17,7 @@ SUBLIB_DIRS=(
 SAMPLE_LIST="/path/to/sample_list_dir/sample_list.txt"
 
 # Genome directory for split-pipe
-GENOME_DIR="/path/to/genome_dir"
+GENOME_DIR="/research/work/johanneo/spipe/newvolume/genomes/hg38/"
 
 # Output base directory for split-pipe outputs
 OUTPUT_BASE_DIR="/path/to/output/directories"
@@ -56,6 +56,10 @@ do
     NUM_R1_FILES=${#R1_FILES[@]}
     NUM_R2_FILES=${#R2_FILES[@]}
 
+    # Initialize FQ1 and FQ2
+    FQ1=""
+    FQ2=""
+
     # Check if concatenated files already exist
     CONCATENATED_R1_EXISTS=false
     CONCATENATED_R2_EXISTS=false
@@ -67,37 +71,37 @@ do
         CONCATENATED_R2_EXISTS=true
     fi
 
-    # Concatenate R1 files if necessary
+    # Determine FQ1 (R1) path
     if [ $NUM_R1_FILES -gt 1 ]; then
+        # Multiple R1 files, concatenation needed
         if [ "$CONCATENATED_R1_EXISTS" = false ]; then
             echo "Concatenating R1 files for $SUBLIB_NAME"
             cat "${R1_FILES[@]}" > "$R1_CONCAT"
         else
             echo "Concatenated R1 file already exists for $SUBLIB_NAME"
         fi
+        FQ1="$R1_CONCAT"
     elif [ $NUM_R1_FILES -eq 1 ]; then
-        # Single R1 file, no concatenation needed
-        if [ "$CONCATENATED_R1_EXISTS" = false ]; then
-            cp "${R1_FILES[0]}" "$R1_CONCAT"
-        fi
+        # Single R1 file, use it directly
+        FQ1="${R1_FILES[0]}"
     else
         echo "No R1 files found for $SUBLIB_NAME"
         continue
     fi
 
-    # Concatenate R2 files if necessary
+    # Determine FQ2 (R2) path
     if [ $NUM_R2_FILES -gt 1 ]; then
+        # Multiple R2 files, concatenation needed
         if [ "$CONCATENATED_R2_EXISTS" = false ]; then
             echo "Concatenating R2 files for $SUBLIB_NAME"
             cat "${R2_FILES[@]}" > "$R2_CONCAT"
         else
             echo "Concatenated R2 file already exists for $SUBLIB_NAME"
         fi
+        FQ2="$R2_CONCAT"
     elif [ $NUM_R2_FILES -eq 1 ]; then
-        # Single R2 file, no concatenation needed
-        if [ "$CONCATENATED_R2_EXISTS" = false ]; then
-            cp "${R2_FILES[0]}" "$R2_CONCAT"
-        fi
+        # Single R2 file, use it directly
+        FQ2="${R2_FILES[0]}"
     else
         echo "No R2 files found for $SUBLIB_NAME"
         continue
@@ -105,8 +109,6 @@ do
 
     # Prepare variables for split-pipe
     JOB_NAME="split_pipe_${SUBLIB_NAME}"
-    FQ1="$R1_CONCAT"
-    FQ2="$R2_CONCAT"
     OUTPUT_DIR="$OUTPUT_BASE_DIR/$SUBLIB_NAME"
 
     # Determine if dry run is requested
