@@ -8,4 +8,4 @@ sbatch --export=job_name="split_pipe_sub2",time="24:00:00",memory="32G",cpus="8"
 sbatch --export=job_name="split_pipe_combine",time="24:00:00",memory="32G",cpus="8",output_dir_sub1="/research/work/johanneo/spipe/newvolume/analysis/Sub1",output_dir_sub2="/research/work/johanneo/spipe/newvolume/analysis/Sub2",combined_output_dir="/research/work/johanneo/spipe/newvolume/analysis/combined_results" split_pipe_combine.sh
 
 #md5 checks
-./md5.sh /research/groups/Linna_Lab/IPSC_seq/X208SC24072023-Z01-F001/ MD5.txt
+./md5_check.sh /research/groups/Linna_Lab/IPSC_seq/X208SC24072023-Z01-F001/ MD5.txt

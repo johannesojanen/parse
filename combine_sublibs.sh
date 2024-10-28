@@ -31,4 +31,4 @@ else
 fi
 
 # Submit the job
-sbatch --export=job_name="$JOB_NAME",time="$TIME",memory="$MEMORY",cpus="$CPUS",sublib_list_file="$SUBLIB_LIST_FILE",combined_output_dir="$COMBINED_OUTPUT_DIR",dry_run_option="$DRY_RUN_OPTION" split_pipe_combine.sh
+sbatch --export=job_name="$JOB_NAME",time="$TIME",memory="$MEMORY",cpus="$CPUS",sublib_list_file="$SUBLIB_LIST_FILE",combined_output_dir="$COMBINED_OUTPUT_DIR",dry_run_option="$DRY_RUN_OPTION" combine_sublibs.sbatch

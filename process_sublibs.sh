@@ -3,39 +3,44 @@
 # ================= User-Defined Arguments ==================
 
 # Base directory containing raw data sublibrary directories
-RAW_DATA_BASE="/path/to/your/raw/data"
+RAW_DATA_BASE="/research/groups/Linna_Lab/IPSC_seq"
 
 # List of sublibrary directories to process (full paths)
 SUBLIB_DIRS=(
-    "$RAW_DATA_BASE/Sub1"
-    "$RAW_DATA_BASE/Sub2"
-    "$RAW_DATA_BASE/Sub3"
+    "$RAW_DATA_BASE/X208SC24072023-Z02-F001/01.RawData/Sub1"
+    "$RAW_DATA_BASE/X208SC24072023-Z02-F001/01.RawData/Sub2"
+    "$RAW_DATA_BASE/X208SC24072023-Z02-F001/01.RawData/Sub3"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Sub4"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Sub5"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Sub6"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Sub7"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Sub8"
+    "$RAW_DATA_BASE/X208SC24072023-Z01-F001/01.RawData/Undetermined"
     # Add or remove sublibraries as needed
 )
 
 # Path to the sample list file (single file for all sublibraries)
-SAMPLE_LIST="/path/to/sample_list_dir/sample_list.txt"
+SAMPLE_LIST="/research/groups/Linna_Lab/IPSC_seq/sample-list.txt"
 
 # Genome directory for split-pipe
-GENOME_DIR="/research/work/johanneo/spipe/newvolume/genomes/hg38/"
+GENOME_DIR="/research/groups/Linna_Lab/IPSC_seq/processed/genomes/hg38"
 
 # Output base directory for split-pipe outputs
-OUTPUT_BASE_DIR="/path/to/output/directories"
+OUTPUT_BASE_DIR="/research/groups/Linna_Lab/IPSC_seq/processed/analysis"
 
-# Chemistry version (v1, v2, or v3)
+# Chemistry version
 CHEMISTRY="v3"
 
 # Dry run option ("yes" for dry run, "no" for actual run)
 DRY_RUN="no"
 
 # Job configuration
-TIME="24:00:00"
+TIME="6:00:00"
 MEMORY="32G"
 CPUS="8"
 
 # ===========================================================
 
-# Activate the conda environment
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate spipe
 
@@ -111,6 +116,9 @@ do
     JOB_NAME="split_pipe_${SUBLIB_NAME}"
     OUTPUT_DIR="$OUTPUT_BASE_DIR/$SUBLIB_NAME"
 
+    # Ensure the output directory exists
+    mkdir -p "$OUTPUT_DIR"
+
     # Determine if dry run is requested
     if [ "$DRY_RUN" = "yes" ]; then
         DRY_RUN_OPTION="--dryrun"
@@ -118,7 +126,15 @@ do
         DRY_RUN_OPTION=""
     fi
 
-    # Submit the job
-    sbatch --export=job_name="$JOB_NAME",time="$TIME",memory="$MEMORY",cpus="$CPUS",chemistry="$CHEMISTRY",genome_dir="$GENOME_DIR",fq1="$FQ1",fq2="$FQ2",output_dir="$OUTPUT_DIR",sample_list_file="$SAMPLE_LIST",dry_run_option="$DRY_RUN_OPTION" split_pipe_single_sample.sh
+    # Submit the job with output and error paths specified
+    sbatch \
+      --job-name="$JOB_NAME" \
+      --output="$OUTPUT_DIR/${JOB_NAME}.%j.out" \
+      --error="$OUTPUT_DIR/${JOB_NAME}.%j.err" \
+      --time="$TIME" \
+      --mem="$MEMORY" \
+      --cpus-per-task="$CPUS" \
+      --export=chemistry="$CHEMISTRY",genome_dir="$GENOME_DIR",fq1="$FQ1",fq2="$FQ2",output_dir="$OUTPUT_DIR",sample_list_file="$SAMPLE_LIST",dry_run_option="$DRY_RUN_OPTION" \
+      single_sublib.sbatch
 
 done
