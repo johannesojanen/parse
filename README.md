@@ -19,8 +19,8 @@ This repository contains a lightweight wrapper pipeline to process Parse Bioscie
 
 ## Prerequisites
 
-- **Parse Biosciences Split-pipe software**: Ensure you have installed the Split-pipe software. Installation instructions are available on the [Parse Biosciences website](https://www.parsebiosciences.com/).
-- **Conda environment**: The scripts assume you have a conda environment named `spipe` with the necessary dependencies installed.
+- **Parse Biosciences Split-pipe software**: Ensure you have installed the Split-pipe software. Installation instructions are available on the Parse Biosciences website.
+- **Conda environment**: The scripts assume you have a conda environment named `spipe` with the necessary dependencies installed. The split-pipe software comes with a script that installs necessary dependencies. To run this, follow the instructions on the Parse Biosciences website.
 - **Compute cluster with SLURM**: The scripts use `sbatch` to submit jobs, so you need access to a compute cluster that uses SLURM for job scheduling.
 - **FASTQ files and MD5 checksums**: Your sc/snRNA-seq data in FASTQ format, along with MD5 checksum files for verification.
 
@@ -31,6 +31,8 @@ This repository contains a lightweight wrapper pipeline to process Parse Bioscie
 - `single_sublib.sbatch`: SLURM batch script called by `process_sublibs.sh` to process a single sublibrary.
 - `combine_sublibs.sh`: Submits a job to combine the results from multiple sublibraries.
 - `combine_sublibs.sbatch`: SLURM batch script called by `combine_sublibs.sh` to perform the combination step.
+
+In the future this will be integrated with our in-house preprocessing tool [QClus](https://www.github.com/linnalab/QClus.git) and possibly some other tools.
 
 ## Usage
 
@@ -201,28 +203,12 @@ After the combination job completes, verify that the combined results are as exp
 
 ## Additional Notes
 
-- **Conda Environment**: Ensure that the `spipe` conda environment is correctly configured with all necessary dependencies. If you haven't created it yet, you can do so with:
-
-  ```bash
-  conda create -n spipe python=3.8
-  conda activate spipe
-  # Install Split-pipe and any other dependencies
-  ```
-
-- **Split-pipe Documentation**: Refer to the [Split-pipe documentation](https://www.parsebiosciences.com/) for more detailed information about its usage and options.
-
-- **Cluster Resources**: Adjust the job configurations based on the resources available on your compute cluster.
-
 - **Error Handling**: If any errors occur, check the error logs in the output directories for troubleshooting.
 
 - **Dry Run**: It's recommended to perform a dry run first by setting `DRY_RUN="yes"` to ensure that all configurations are correct before running the actual processing.
 
 - **Data Backup**: Always keep a backup of your raw data and important files.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-*For any questions or assistance, please contact [Your Name or Support Contact].*
+*For any questions or assistance, please open an issue or contact johannes.ojanen@gmail.com.*
